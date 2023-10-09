@@ -1,0 +1,76 @@
+2022-03-02 12:54:23,899 - root - INFO - Registered CLI hooks from 1 installed plugin(s): kedro-telemetry-0.1.1
+2022-03-02 12:54:25,763 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
+Kedro-Telemetry is installed, but you have opted out of sharing usage analytics so none will be collected.
+2022-03-02 12:54:26,930 - kedro.framework.session.store - INFO - `read()` not implemented for `BaseSessionStore`. Assuming empty store.
+2022-03-02 12:54:26,961 - root - INFO - ** Kedro project bfl-winnie
+2022-03-02 12:54:31,070 - kedro.framework.session.store - INFO - `save()` not implemented for `BaseSessionStore`. Skipping the step.
+/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/fsspec/__init__.py:43: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+  for spec in entry_points.get("fsspec.specs", []):
+Traceback (most recent call last):
+  File "/home/klara/anaconda3/envs/winnie3/bin/kedro", line 8, in <module>
+    sys.exit(main())
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/kedro/framework/cli/cli.py", line 265, in main
+    cli_collection()
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/click/core.py", line 829, in __call__
+    return self.main(*args, **kwargs)
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/kedro/framework/cli/cli.py", line 215, in main
+    **extra,
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/click/core.py", line 782, in main
+    rv = self.invoke(ctx)
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/click/core.py", line 1259, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/click/core.py", line 1066, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/click/core.py", line 610, in invoke
+    return callback(*args, **kwargs)
+  File "/home/klara/bfl-winnie/src/winnie3/cli.py", line 169, in run
+    pipeline_name=pipeline,
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/kedro/framework/session/session.py", line 408, in run
+    run_result = runner.run(filtered_pipeline, catalog, run_id)
+  File "/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/kedro/runner/runner.py", line 94, in run
+    f"Pipeline input(s) {unsatisfied} not found in the DataCatalog"
+ValueError: Pipeline input(s) {'unique_case_sms_messages'} not found in the DataCatalog
+2022-03-02 13:04:02,045 - root - INFO - Registered CLI hooks from 1 installed plugin(s): kedro-telemetry-0.1.1
+2022-03-02 13:04:03,833 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
+Kedro-Telemetry is installed, but you have opted out of sharing usage analytics so none will be collected.
+2022-03-02 13:04:05,016 - kedro.framework.session.store - INFO - `read()` not implemented for `BaseSessionStore`. Assuming empty store.
+2022-03-02 13:04:05,057 - root - INFO - ** Kedro project bfl-winnie
+2022-03-02 13:04:08,591 - kedro.io.data_catalog - INFO - Loading data from `case_issues` (SQLQueryDataSet)...
+2022-03-02 13:04:08,795 - kedro.pipeline.node - INFO - Running node: correct_df: correct_df([case_issues]) -> [correct_case_issues]
+372 original issues
+7 issues will be deleted.
+368 unique issues.
+2022-03-02 13:04:09,843 - kedro.io.data_catalog - INFO - Saving data to `correct_case_issues` (PickleDataSet)...
+2022-03-02 13:04:09,848 - kedro.runner.sequential_runner - INFO - Completed 1 out of 5 tasks
+2022-03-02 13:04:09,849 - kedro.io.data_catalog - INFO - Loading data from `raw_consultation_highlights` (SQLQueryDataSet)...
+2022-03-02 13:04:10,169 - kedro.io.data_catalog - INFO - Loading data from `correct_case_issues` (PickleDataSet)...
+2022-03-02 13:04:10,172 - kedro.pipeline.node - INFO - Running node: ch_case_issues: message_to_issues([correct_case_issues,raw_consultation_highlights]) -> [ch_case_issues]
+2022-03-02 13:04:12,745 - kedro.io.data_catalog - INFO - Saving data to `ch_case_issues` (PickleDataSet)...
+2022-03-02 13:04:12,762 - kedro.runner.sequential_runner - INFO - Completed 2 out of 5 tasks
+2022-03-02 13:04:12,763 - kedro.io.data_catalog - INFO - Loading data from `unique_sms_messages` (SQLQueryDataSet)...
+2022-03-02 13:06:35,124 - kedro.io.data_catalog - INFO - Loading data from `correct_case_issues` (PickleDataSet)...
+2022-03-02 13:06:35,128 - kedro.pipeline.node - INFO - Running node: sms2_case_issues: message_to_issues([correct_case_issues,unique_sms_messages]) -> [sms2_case_issues]
+2022-03-02 13:06:35,368 - kedro.io.data_catalog - INFO - Saving data to `sms2_case_issues` (PickleDataSet)...
+2022-03-02 13:06:35,371 - kedro.runner.sequential_runner - INFO - Completed 3 out of 5 tasks
+2022-03-02 13:06:35,371 - kedro.io.data_catalog - INFO - Loading data from `raw_case_sms_messages` (SQLQueryDataSet)...
+2022-03-02 13:06:37,256 - kedro.io.data_catalog - INFO - Loading data from `correct_case_issues` (PickleDataSet)...
+2022-03-02 13:06:37,259 - kedro.pipeline.node - INFO - Running node: sms1_case_issues: message_to_issues([correct_case_issues,raw_case_sms_messages]) -> [sms1_case_issues]
+2022-03-02 13:06:37,418 - kedro.io.data_catalog - INFO - Saving data to `sms1_case_issues` (PickleDataSet)...
+2022-03-02 13:06:37,421 - kedro.runner.sequential_runner - INFO - Completed 4 out of 5 tasks
+2022-03-02 13:06:37,421 - kedro.io.data_catalog - INFO - Loading data from `raw_case_fb_messages` (SQLQueryDataSet)...
+2022-03-02 13:49:43,914 - kedro.io.data_catalog - INFO - Loading data from `correct_case_issues` (PickleDataSet)...
+2022-03-02 13:49:43,916 - kedro.pipeline.node - INFO - Running node: fm_case_issues: message_to_issues([correct_case_issues,raw_case_fb_messages]) -> [fm_case_issues]
+2022-03-02 13:49:44,662 - kedro.io.data_catalog - INFO - Saving data to `fm_case_issues` (PickleDataSet)...
+2022-03-02 13:49:44,668 - kedro.runner.sequential_runner - INFO - Completed 5 out of 5 tasks
+2022-03-02 13:49:44,668 - kedro.runner.sequential_runner - INFO - Pipeline execution completed successfully.
+2022-03-02 13:49:44,668 - kedro.framework.session.store - INFO - `save()` not implemented for `BaseSessionStore`. Skipping the step.
+/home/klara/anaconda3/envs/winnie3/lib/python3.7/site-packages/fsspec/__init__.py:43: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+  for spec in entry_points.get("fsspec.specs", []):
+/home/klara/bfl-winnie/src/winnie3/d00_utils/issues_transform.py:147: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  case_issues_df["issue"] = case_issues_df.issue.apply(lambda v: transform.get(v, v))
+/home/klara/bfl-winnie/src/winnie3/d00_utils/message_to_issues.py:24: FutureWarning: In a future version of pandas all arguments of DataFrame.drop except for the argument 'labels' will be keyword-only
+  case_issues_messages.drop("issue", 1),

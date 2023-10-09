@@ -1,0 +1,8 @@
+{% for item in predicted_labels %}
+<button class="rounded-pill bg-primary my-2 mx-2 confidence-{{ item.confidence }} predicted position-relative"
+    value="{{ item.text }}" data-info="{{ item.tagInfo }}">{{ item.text }}
+    <span class="position-absolute top-0 start-100 translate-middle badge border-light rounded-pill bg-secondary bg-sm">
+        {{ item.score }}%
+    </span>
+</button>
+{% endfor %}

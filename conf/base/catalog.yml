@@ -1,0 +1,316 @@
+_sql: &sql
+  type: kedro.extras.datasets.pandas.SQLTableDataSet
+  credentials: dssg
+  save_args:
+    if_exists: 'fail'
+
+_sql_q: &sql_q
+  type: kedro.extras.datasets.pandas.SQLQueryDataSet
+  credentials: dssg
+
+_pq: &pq
+  type: kedro.extras.datasets.pandas.ParquetDataSet
+  filepath:
+
+_pickle: &pickle
+  type: kedro.extras.datasets.pickle.PickleDataSet
+  filepath:
+
+_fig: &fig
+  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+  filepath:
+
+_csv: &csv
+  type: kedro.extras.datasets.pandas.CSVDataSet
+  filepath:
+
+##############
+#### RAW #####
+##############
+
+raw_fb_messages:
+  table_name: messages
+  <<: *sql
+
+raw_received_sms:
+  table_name: received_sms
+  <<: *sql
+
+raw_sent_sms:
+  table_name: sent_sms
+  <<: *sql
+
+raw_cases:
+  table_name: cases
+  <<: *sql
+
+
+##############
+#### INT #####
+##############
+
+intermediate_fb_messages:
+  filepath: /datadrive/int/fb_messages
+  <<: *pq
+
+intermediate_received_sms:
+  filepath: /datadrive/int/received_sms
+  <<: *pq
+
+intermediate_sent_sms:
+  filepath: /datadrive/int/sent_sms
+  <<: *pq
+
+##############
+#### PRM #####
+##############
+
+primary_fb_conversations:
+  filepath: /datadrive/prm/fb_conversations
+  <<: *pq
+
+primary_sms:
+  filepath: /datadrive/prm/sms
+  <<: *pq
+
+primary_messages:
+  filepath: /datadrive/prm/messages
+  <<: *pq
+
+##############
+## SEARCH ####
+##############
+
+qa_dict:
+  filepath: /datadrive/search/qa_dict
+  <<: *pickle
+
+
+####################
+## Trained Models ##
+####################
+
+trained_model:
+  filepath: /datadrive/models/trained_model
+  <<: *pickle
+
+model_numeric_vectors:
+  filepath: /datadrive/models/numeric_vectors
+  <<: *pq
+
+model_raw_text:
+  filepath: /datadrive/models/raw_text
+  <<: *pq
+
+model_preprocessed_text:
+  filepath: /datadrive/models/preprocessed_text
+  <<: *pq
+
+docs_dataframe:
+  filepath: /datadrive/models/docs_dataframe
+  <<: *pickle
+
+
+####################
+## Deployment ######
+####################
+
+current_case_data:
+  filepath: /datadrive/deploy/current_case_data
+  <<: *pq
+
+recommendations:
+  table_name: recommended_responses_3
+  type: kedro.extras.datasets.pandas.SQLTableDataSet
+  credentials: dssg
+  save_args:
+    if_exists: 'append'
+
+##########################################
+######## CASE ISSUES PREDICTION ##########
+##########################################
+
+
+raw_case_sms_messages:
+  sql: > 
+    SELECT
+        DISTINCT unique_cases.id AS case_id,
+        received_sms.message AS message,
+        received_sms.created_at AS message_date
+    FROM
+        (
+            SELECT
+                *
+            FROM
+                cases
+            WHERE
+                cases.customer_id IN (
+                    SELECT
+                        cases.customer_id
+                    FROM
+                        cases
+                    GROUP BY
+                        cases.customer_id
+                    HAVING
+                        COUNT(*) = 1
+                )
+                AND cases.service_delivery = 'sms'
+        ) unique_cases
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                customer
+            WHERE
+                customer.telephone IN (
+                    SELECT
+                        telephone
+                    FROM
+                        customer
+                    WHERE
+                        telephone LIKE '07%%'
+                    GROUP BY
+                        telephone
+                    HAVING
+                        COUNT(*) = 1
+                )
+        ) unique_customers ON unique_cases.customer_id = unique_customers.id
+        INNER JOIN received_sms ON received_sms.sender = unique_customers.telephone
+    WHERE
+        received_sms.message NOT IN (
+            'LAW (question)',
+            'LAW QUESTIONS',
+            'Law ,',
+            'Law why',
+            'LAW how',
+            'Law got it.',
+            'law',
+            'law no',
+            'law yes'
+        )
+        AND DATEDIFF(
+            unique_cases.created_at,
+            received_sms.created_at
+        ) BETWEEN 0
+        AND 14
+    ORDER BY
+        unique_cases.id,
+        received_sms.created_at;
+  <<: *sql_q
+
+unique_sms_messages:
+  sql: >
+    SELECT
+        cases.id AS case_id,
+        received_sms.message AS message,
+        received_sms.created_at AS message_date
+    FROM
+        (
+            SELECT
+                received_sms.id AS message_id,
+                MAX(cases.id) AS case_id
+            FROM
+                received_sms
+                INNER JOIN cases ON cases.consultation_highlights LIKE CONCAT('%%', received_sms.message, '%%')
+            GROUP BY
+                received_sms.id
+            HAVING
+                COUNT(*) = 1
+        ) pairs
+        INNER JOIN cases ON pairs.case_id = cases.id
+        INNER JOIN received_sms ON pairs.message_id = received_sms.id
+    WHERE
+        DATEDIFF(
+            cases.created_at,
+            received_sms.created_at
+        ) BETWEEN 0
+        AND 14;
+  <<: *sql_q
+
+raw_case_fb_messages:
+  sql: > 
+    SELECT
+        cases.id AS case_id,
+        messages.body AS message,
+        messages.message_sent_date AS message_date
+    FROM
+        (
+            SELECT
+                messages.id AS message_id,
+                MAX(cases.id) AS case_id
+            FROM
+                messages
+                INNER JOIN cases ON cases.consultation_highlights LIKE CONCAT('%%', messages.body, '%%')
+            GROUP BY
+                messages.id
+            HAVING
+                COUNT(*) = 1
+        ) pairs
+        INNER JOIN cases ON pairs.case_id = cases.id
+        INNER JOIN messages ON pairs.message_id = messages.id
+    WHERE
+        DATEDIFF(
+            cases.created_at,
+            messages.message_sent_date
+        ) BETWEEN 0
+        AND 14
+    ORDER BY
+        messages.message_sent_date;
+  <<: *sql_q
+
+raw_consultation_highlights:
+  sql: >
+    SELECT cases.id as case_id,
+        cases.consultation_highlights as message,
+        cases.updated_at as message_date
+    FROM
+        cases;
+  <<: *sql_q  
+
+case_issues:
+  sql: >
+    SELECT
+        cases.id AS case_id,
+        issues.name AS issue
+    FROM
+        cases
+        INNER JOIN case_issues ON cases.id = case_issues.case_id
+        INNER JOIN issues ON issues.id = case_issues.issue_id;
+  <<: *sql_q 
+
+correct_case_issues:
+  filepath: /datadrive/issues/correct_case_issues
+  <<: *pickle
+
+ch_case_issues:
+  filepath: /datadrive/issues/ch_case_issues
+  <<: *pickle
+
+fm_case_issues:
+  filepath: /datadrive/issues/fm_case_issues
+  <<: *pickle
+
+sms1_case_issues:
+  filepath: /datadrive/issues/sms1_case_issues
+  <<: *pickle
+
+sms2_case_issues:
+  filepath: /datadrive/issues/sms2_case_issues
+  <<: *pickle
+
+ch_vectorizer_model:
+  filepath: /datadrive/issues/ch_vectorizer_model
+  <<: *pickle
+
+ch_issue_predict_model:
+  filepath: /datadrive/issues/ch_issue_predict_model
+  <<: *pickle
+
+ch_issue_predict_labels:
+  filepath: /datadrive/issues/ch_issue_predict_labels
+  <<: *pickle
+
+
+
+
+

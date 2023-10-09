@@ -1,0 +1,126 @@
+.confidence-90 {
+    background-color: #03045E!important;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-80 {
+    background-color: #023E8A!important;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-70 {
+    background-color: #0077B6!important;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-60 {
+    background-color: #0096C7!important;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-50 {
+    background-color: #00B4D8!important;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-40 {
+    background-color: #48CAE4!important;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-30 {
+    background-color: #90E0EF!important;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-20 {
+    background-color: #90E0EF!important;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-10 {
+    background-color: #ADE8F4!important;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding-right: 1em;
+}
+
+.confidence-0 {
+    background-color: #CAF0F8!important;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding-right: 1em;
+}
+
+.anyClass {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.carousel-item {
+    transition-duration: 0s;
+}
+
+
+/* CSS HEX */
+
+.importance-90 {
+    color: rgb(255, 255, 255);
+    background-color: #ff0000ff;
+}
+
+.importance-80 {
+    color: rgb(255, 255, 255);
+    background-color: #ff1c1cff;
+}
+
+.importance-70 {
+    color: rgb(255, 255, 255);
+    background-color: #ff3939ff
+}
+
+.importance-60 {
+    color: rgb(255, 255, 255);
+    background-color: #ff5555ff
+}
+
+.importance-50 {
+    color: rgb(255, 255, 255);
+    background-color: #ff7171ff
+}
+
+.importance-40 {
+    background-color: #ff8e8eff
+}
+
+.importance-30 {
+    background-color: #ffaaaaff;
+}
+
+.importance-20 {
+    background-color: #ffc6c6ff;
+}
+
+.importance-10 {
+    background-color: #ffe3e3ff;
+}

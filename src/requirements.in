@@ -1,0 +1,14 @@
+rich
+langdetect
+isort
+kedro
+kedro-telemetry
+nbstripout
+wheel
+spacy
+pandas
+pymysql
+wmd
+sentence_transformers
+contractions
+nltk

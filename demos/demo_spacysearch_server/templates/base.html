@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='slider.scss') }}">
+    <style>
+        .results {
+            padding-top: 220px;
+        }
+
+        .query {
+            background-color: white
+        }
+    </style>
+
+    <title>Winnie search</title>
+</head>
+
+<body>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+    <script src="{{url_for('static', filename='slider.js')}}"></script>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+    <div class="fixed-top query">
+        <div class="container">
+            <h2>Search previous cases</h2>
+
+            <form method="post" "{{ url_for('hello') }}" class="row g-3"
+                oninput=" age_output.value=parseInt(customRange1.value);">
+                <div class="col col-lg-6 col-md-9">
+                    <!-- <label for="query" class="form-label">Query</label> -->
+
+                    <input type="text" class="form-control" id="query" aria-describedby="queryHelp" name="query"
+                        value="{{ query }}">
+                    <div id="queryHelp" class="form-text">Message to query</div>
+                </div>
+                <div class="col col-lg-6 col-md-9">
+                    <!-- <label for="query" class="form-label">Query</label> -->
+
+                    <input type="text" class="form-control" id="extra_words" aria-describedby="queryHelp"
+                        name="extra_words" value="{{ extra_words }}">
+                    <div id="queryHelp" class="form-text">Additional search terms</div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+            <br />
+        </div>
+    </div>
+    {% if was_queried %}
+    <div class="results">
+        <div class="container">
+            <div>
+                <p class=" fs-5">
+                    Your query returned <span class="fw-bold">{{ count }}</span> results.
+                </p>
+            </div>
+            <div class="row align-items-center">
+                <div class="col">
+                    <p class="fs-6">Showing {{ start_idx }}-{{ end_idx }} of {{ count }}.</p>
+                </div>
+                <div class="col">
+                    <nav aria-label="...">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {{ back_disabled }}">
+                                <span class="page-link">First</span>
+                            </li>
+                            <li class="page-item {{ back_disabled }}">
+                                <span class="page-link">Previous</span>
+                            </li>
+                            <li class="page-item active" aria-current="page"><span class="page-link">{{ current_page
+                                    }}</span></li>
+                            <li class="page-item {{ forward_disabled }}">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                            <li class="page-item {{ forward_disabled }}">
+                                <a class="page-link" method="post" type="submit" href="{{ url_for('hello') }}"
+                                    value="last" name="page">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="d-grid gap-1">
+                {% for q in page_results %}
+                <div class="card bg-{{ q.bg_class }} p-3 text-dark bg-opacity-25">
+                    <div class="card-header"> Your match: {{ q.score }}</div>
+                    <div class="card-body">
+                        {{ q.text|safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>

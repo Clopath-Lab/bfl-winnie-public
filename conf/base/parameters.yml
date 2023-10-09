@@ -1,0 +1,29 @@
+DATABASE_PARAMS:
+  db_host: 127.0.0.1
+  db_name: bios
+
+
+# The paramters for training the model
+train_winnie_settings:
+  feature_type: 'use'
+  preprocessing_steps: ['clean_blasts','denoise_text','replace_words','replace_contractions','remove_punctuation','replace_numbers_with_words','remove_punctuation','remove_custom_stop_words']
+  train_params: {max_df: 0.9, min_df: 0.01}
+  w2v_pretrained_file: '/datadrive/models/GoogleNews-vectors-negative300.bin'
+
+template_embedding:
+  bert: yes
+
+deploy_params:
+  distance_metric: 'cosine'
+  num_neighbours: 5
+
+case_issue_prediction:
+  preprocessing_steps:
+  - denoise_text
+  - remove_punctuation
+  - replace_numbers_with_words
+  - remove_punctuation
+  - remove_custom_stop_words
+  - replace_words
+  - - drop_shorter
+    - length: 20
